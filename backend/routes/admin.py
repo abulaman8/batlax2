@@ -6,10 +6,6 @@ from werkzeug.security import generate_password_hash
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/api/admin')
 
-def admin_required():
-    import json
-    current_user = json.loads(get_jwt_identity())
-    if current_user['role'] != 'admin':
 def admin_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
@@ -96,10 +92,8 @@ def manage_doctors():
 
 @admin_bp.route('/doctors/<int:doctor_id>', methods=['PUT', 'DELETE'])
 @jwt_required()
+@admin_required
 def update_doctor(doctor_id):
-    if not admin_required():
-        return jsonify({"msg": "Admins only"}), 403
-        
     doctor = Doctor.query.get_or_404(doctor_id)
     
     if request.method == 'DELETE':
@@ -121,10 +115,8 @@ def update_doctor(doctor_id):
 
 @admin_bp.route('/patients', methods=['GET'])
 @jwt_required()
+@admin_required
 def get_patients():
-    if not admin_required():
-        return jsonify({"msg": "Admins only"}), 403
-        
     patients = Patient.query.all()
     result = []
     for p in patients:
@@ -139,10 +131,8 @@ def get_patients():
 
 @admin_bp.route('/departments', methods=['GET', 'POST'])
 @jwt_required()
+@admin_required
 def manage_departments():
-    if not admin_required():
-        return jsonify({"msg": "Admins only"}), 403
-        
     if request.method == 'GET':
         depts = Department.query.all()
         return jsonify([{"id": d.id, "name": d.name, "description": d.description} for d in depts]), 200
