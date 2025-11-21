@@ -24,6 +24,12 @@ def login():
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
+    """
+    Register a new user.
+    
+    Expects JSON data: { "username": "...", "email": "...", "password": "...", "role": "patient" }
+    Only allows registration for 'patient' role.
+    """
     data = request.get_json()
     username = data.get('username')
     email = data.get('email')

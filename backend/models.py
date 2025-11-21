@@ -2,6 +2,12 @@ from .extensions import db
 from datetime import datetime
 
 class User(db.Model):
+    """
+    User Model.
+    
+    Represents a user in the system. This is the base model for authentication.
+    Roles can be: 'admin', 'doctor', 'patient'.
+    """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -19,6 +25,12 @@ class Department(db.Model):
     doctors = db.relationship('Doctor', backref='department', lazy=True)
 
 class Doctor(db.Model):
+    """
+    Doctor Model.
+    
+    Links to the User model (1-to-1) and contains doctor-specific info
+    like specialization and availability.
+    """
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'), nullable=True)
@@ -29,6 +41,12 @@ class Doctor(db.Model):
     appointments = db.relationship('Appointment', backref='doctor', lazy=True)
 
 class Patient(db.Model):
+    """
+    Patient Model.
+    
+    Links to the User model (1-to-1) and contains patient-specific info
+    like contact details and medical history references.
+    """
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     date_of_birth = db.Column(db.Date)

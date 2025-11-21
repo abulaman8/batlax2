@@ -16,11 +16,17 @@ def get_current_doctor():
 @doctor_bp.route('/appointments', methods=['GET'])
 @jwt_required()
 def get_appointments():
+    """
+    Get appointments for the currently logged-in doctor.
+    
+    Returns:
+        List of appointments with patient details and status.
+    """
     doctor = get_current_doctor()
     if not doctor:
         return jsonify({"msg": "Doctors only"}), 403
         
-    appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
+    appointments = Appointment.query.filter_by(doctor_id=doctor.id).order_by(Appointment.date, Appointment.time).all()
     result = []
     for appt in appointments:
         result.append({
@@ -35,6 +41,13 @@ def get_appointments():
 @doctor_bp.route('/appointments/<int:appt_id>/complete', methods=['POST'])
 @jwt_required()
 def complete_appointment(appt_id):
+    """
+    Mark an appointment as completed and add treatment details.
+    
+    Args:
+        appt_id: ID of the appointment to complete.
+    Expects JSON: { "diagnosis": "...", "prescription": "...", "notes": "..." }
+    """
     doctor = get_current_doctor()
     if not doctor:
         return jsonify({"msg": "Doctors only"}), 403

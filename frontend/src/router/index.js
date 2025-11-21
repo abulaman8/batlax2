@@ -7,7 +7,6 @@ import DoctorDashboard from '../views/DoctorDashboard.vue';
 import PatientDashboard from '../views/PatientDashboard.vue';
 
 const routes = [
-    { path: '/', redirect: '/login' },
     { path: '/login', component: Login },
     { path: '/register', component: Register },
     {
@@ -25,25 +24,33 @@ const routes = [
         component: PatientDashboard,
         meta: { requiresAuth: true, role: 'patient' }
     },
+    { path: '/', redirect: '/login' }
 ];
 
 const router = createRouter({
     history: createWebHistory(),
-    routes,
+    routes
 });
 
+// Navigation Guard
+// Runs before every route change to check authentication
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (!store.getters.isLoggedIn) {
+    const isLoggedIn = store.getters.isLoggedIn;
+    const userRole = store.getters.userRole;
+
+    if (to.meta.requiresAuth) {
+        if (!isLoggedIn) {
+            // Redirect to login if not authenticated
             next('/login');
-            return;
+        } else if (to.meta.role && to.meta.role !== userRole) {
+            // Redirect if role doesn't match (e.g., patient trying to access admin)
+            next('/login');
+        } else {
+            next();
         }
-        if (to.meta.role && store.getters.userRole !== to.meta.role) {
-            next('/login'); // Or unauthorized page
-            return;
-        }
+    } else {
+        next();
     }
-    next();
 });
 
 export default router;

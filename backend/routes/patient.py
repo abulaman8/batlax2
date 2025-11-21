@@ -16,6 +16,14 @@ def get_current_patient():
 @patient_bp.route('/doctors', methods=['GET'])
 @jwt_required()
 def search_doctors():
+    """
+    Search for doctors by specialization.
+    
+    Query Params:
+        specialization: (Optional) Filter by specialization name.
+    Returns:
+        List of doctors matching the criteria.
+    """
     specialization = request.args.get('specialization')
     query = Doctor.query
     
@@ -37,6 +45,12 @@ def search_doctors():
 @patient_bp.route('/appointments', methods=['GET', 'POST'])
 @jwt_required()
 def manage_appointments():
+    """
+    Manage Patient Appointments.
+    
+    GET: List all past and upcoming appointments for the patient.
+    POST: Book a new appointment. Expects JSON: { "doctor_id": 1, "date": "YYYY-MM-DD", "time": "HH:MM" }
+    """
     patient = get_current_patient()
     if not patient:
         return jsonify({"msg": "Patients only"}), 403

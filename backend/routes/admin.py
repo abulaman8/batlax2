@@ -10,15 +10,26 @@ def admin_required():
     import json
     current_user = json.loads(get_jwt_identity())
     if current_user['role'] != 'admin':
-        return False
-    return True
+def admin_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        import json
+        current_user = json.loads(get_jwt_identity())
+        if current_user['role'] != 'admin':
+            return jsonify({"msg": "Admins only"}), 403
+        return fn(*args, **kwargs)
+    return wrapper
 
 @admin_bp.route('/stats', methods=['GET'])
 @jwt_required()
+@admin_required
 def get_stats():
-    if not admin_required():
-        return jsonify({"msg": "Admins only"}), 403
-        
+    """
+    Get system statistics for the Admin Dashboard.
+    
+    Returns:
+        JSON object with counts of doctors, patients, and appointments.
+    """
     doctor_count = Doctor.query.count()
     patient_count = Patient.query.count()
     appointment_count = Appointment.query.count()
@@ -31,10 +42,14 @@ def get_stats():
 
 @admin_bp.route('/doctors', methods=['GET', 'POST'])
 @jwt_required()
+@admin_required
 def manage_doctors():
-    if not admin_required():
-        return jsonify({"msg": "Admins only"}), 403
-        
+    """
+    Manage Doctors (List and Add).
+    
+    GET: Returns a list of all doctors.
+    POST: Creates a new doctor account. Expects JSON: { "username", "email", "password", "specialization" }
+    """
     if request.method == 'GET':
         doctors = Doctor.query.all()
         result = []
