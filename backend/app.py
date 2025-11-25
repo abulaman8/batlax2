@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from .config import Config
-from .extensions import db, jwt, cache, celery
+from .extensions import db, jwt, cache, celery, mail
 from .models import User, Department, Doctor, Patient, Appointment, Treatment
 from werkzeug.security import generate_password_hash
 import click
@@ -28,6 +28,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     jwt.init_app(app)
     cache.init_app(app)
+    mail.init_app(app)
     
     # Initialize Celery
     # The user's provided Code Edit snippet changed this to celery_init_app(app)
