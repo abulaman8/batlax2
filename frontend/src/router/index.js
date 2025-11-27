@@ -5,8 +5,10 @@ import Register from '../views/Register.vue';
 import AdminDashboard from '../views/AdminDashboard.vue';
 import DoctorDashboard from '../views/DoctorDashboard.vue';
 import PatientDashboard from '../views/PatientDashboard.vue';
+import LandingPage from '../views/LandingPage.vue';
 
 const routes = [
+    { path: '/', component: LandingPage },
     { path: '/login', component: Login },
     { path: '/register', component: Register },
     {
@@ -23,8 +25,7 @@ const routes = [
         path: '/patient',
         component: PatientDashboard,
         meta: { requiresAuth: true, role: 'patient' }
-    },
-    { path: '/', redirect: '/login' }
+    }
 ];
 
 const router = createRouter({

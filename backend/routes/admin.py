@@ -3,6 +3,7 @@ from backend.models import User, Doctor, Patient, Department, Appointment
 from backend.extensions import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash
+from functools import wraps
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/api/admin')
 
