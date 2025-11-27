@@ -2,7 +2,7 @@
   <div class="landing-page">
     <!-- Hero Section -->
     <header class="hero-section">
-      <div class="container">
+      <div class="container-fluid px-5">
         <div class="row align-items-center">
           <div class="col-lg-6 hero-content">
             <h1 class="display-4 fw-bold mb-4">Modern Healthcare for a Better Tomorrow</h1>
@@ -84,11 +84,12 @@
 }
 
 .hero-section {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, #00251a 100%); /* Darker gradient end */
   color: white;
   padding: 100px 0;
   position: relative;
   overflow: hidden;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Add text shadow for contrast */
 }
 
 .hero-content {

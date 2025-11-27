@@ -5,39 +5,39 @@
     <!-- Stats Cards -->
     <div class="row mb-5">
       <div class="col-md-4">
-        <div class="card text-white bg-gradient-primary h-100 border-0 shadow-hover">
+        <div class="card bg-white h-100 border-0 shadow-hover border-start border-4 border-primary">
           <div class="card-body d-flex align-items-center justify-content-between">
             <div>
-              <h6 class="text-uppercase mb-2 opacity-75">Total Doctors</h6>
-              <h2 class="display-4 fw-bold mb-0">{{ stats.doctors }}</h2>
+              <h6 class="text-uppercase mb-2 text-muted fw-bold">Total Doctors</h6>
+              <h2 class="display-4 fw-bold mb-0 text-dark">{{ stats.doctors }}</h2>
             </div>
-            <div class="icon-circle bg-white text-primary">
+            <div class="icon-circle bg-primary-subtle text-primary">
               <i class="bi bi-person-badge fs-2"></i>
             </div>
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card text-white bg-gradient-success h-100 border-0 shadow-hover">
+        <div class="card bg-white h-100 border-0 shadow-hover border-start border-4 border-success">
           <div class="card-body d-flex align-items-center justify-content-between">
             <div>
-              <h6 class="text-uppercase mb-2 opacity-75">Total Patients</h6>
-              <h2 class="display-4 fw-bold mb-0">{{ stats.patients }}</h2>
+              <h6 class="text-uppercase mb-2 text-muted fw-bold">Total Patients</h6>
+              <h2 class="display-4 fw-bold mb-0 text-dark">{{ stats.patients }}</h2>
             </div>
-            <div class="icon-circle bg-white text-success">
+            <div class="icon-circle bg-success-subtle text-success">
               <i class="bi bi-people fs-2"></i>
             </div>
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card text-white bg-gradient-info h-100 border-0 shadow-hover">
+        <div class="card bg-white h-100 border-0 shadow-hover border-start border-4 border-info">
           <div class="card-body d-flex align-items-center justify-content-between">
             <div>
-              <h6 class="text-uppercase mb-2 opacity-75">Appointments</h6>
-              <h2 class="display-4 fw-bold mb-0">{{ stats.appointments }}</h2>
+              <h6 class="text-uppercase mb-2 text-muted fw-bold">Appointments</h6>
+              <h2 class="display-4 fw-bold mb-0 text-dark">{{ stats.appointments }}</h2>
             </div>
-            <div class="icon-circle bg-white text-info">
+            <div class="icon-circle bg-info-subtle text-info">
               <i class="bi bi-calendar-check fs-2"></i>
             </div>
           </div>
