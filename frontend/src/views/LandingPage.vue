@@ -2,26 +2,18 @@
   <div class="landing-page">
     <!-- Hero Section -->
     <header class="hero-section">
-      <div class="container-fluid px-5">
+      <div class="container-fluid">
         <div class="row align-items-center">
-          <div class="col-lg-6 hero-content">
-            <h1 class="display-4 fw-bold mb-4">Modern Healthcare for a Better Tomorrow</h1>
-            <p class="lead mb-4">Experience the future of hospital management. Streamlined appointments, secure records, and world-class care at your fingertips.</p>
+          <div class="col-lg-6 hero-content px-5">
+            <h1 class="display-4 fw-bold mb-4 text-white">Modern Healthcare for a Better Tomorrow</h1>
+            <p class="lead mb-4 text-white opacity-90">Experience the future of hospital management. Streamlined appointments, secure records, and world-class care at your fingertips.</p>
             <div class="d-flex gap-3">
               <router-link to="/login" class="btn btn-light btn-lg px-4 text-primary fw-bold">Login</router-link>
               <router-link to="/register" class="btn btn-outline-light btn-lg px-4">Register Patient</router-link>
             </div>
           </div>
-          <div class="col-lg-6 hero-image-container">
-             <!-- Placeholder for the image that failed to generate, using a nice CSS pattern instead -->
-             <div class="hero-placeholder">
-                <div class="icon-grid">
-                  <i class="bi bi-heart-pulse-fill"></i>
-                  <i class="bi bi-hospital"></i>
-                  <i class="bi bi-person-badge-fill"></i>
-                  <i class="bi bi-capsule"></i>
-                </div>
-             </div>
+          <div class="col-lg-6 hero-image-container p-0">
+             <img src="@/assets/hero-illustration.jpg" alt="Healthcare Illustration" class="img-fluid w-100 h-100 object-fit-cover hero-image" />
           </div>
         </div>
       </div>
@@ -96,23 +88,10 @@
   z-index: 2;
 }
 
-.hero-placeholder {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.icon-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 4rem;
+.hero-image {
+  min-height: 500px;
+  mask-image: linear-gradient(to right, transparent 0%, black 20%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%);
 }
 
 .section-title {

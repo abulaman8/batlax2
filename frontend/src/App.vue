@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4" v-if="isLoggedIn">
-      <div class="container">
+      <div class="container-fluid px-5">
         <a class="navbar-brand" href="#">HMS</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
@@ -15,9 +15,7 @@
         </div>
       </div>
     </nav>
-    <div class="container">
-      <router-view />
-    </div>
+    <router-view />
   </div>
 </template>
 

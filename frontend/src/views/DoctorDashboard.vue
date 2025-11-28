@@ -1,6 +1,7 @@
 <template>
   <div class="fade-in">
-    <h2 class="mb-4 fw-bold text-primary">Doctor's Console</h2>
+    <div class="container">
+      <h2 class="mb-4 fw-bold text-primary">Doctor's Console</h2>
     
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
@@ -79,6 +80,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>

@@ -1,6 +1,7 @@
 <template>
   <div class="fade-in">
-    <h2 class="mb-4 fw-bold text-primary">Patient Portal</h2>
+    <div class="container">
+      <h2 class="mb-4 fw-bold text-primary">Patient Portal</h2>
     
     <div class="row">
       <!-- Booking Section -->
@@ -121,6 +122,7 @@
       </div>
     </div>
 
+    </div>
   </div>
 </template>
 
