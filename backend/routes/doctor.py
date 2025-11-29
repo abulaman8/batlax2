@@ -95,7 +95,6 @@ def get_my_patients():
     if not doctor:
         return jsonify({"msg": "Doctors only"}), 403
         
-    # Get unique patients from appointments
     appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
     patient_ids = set([a.patient_id for a in appointments])
     patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()

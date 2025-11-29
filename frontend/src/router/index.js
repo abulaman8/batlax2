@@ -6,7 +6,6 @@ import AdminDashboard from '../views/AdminDashboard.vue';
 import DoctorDashboard from '../views/DoctorDashboard.vue';
 import PatientDashboard from '../views/PatientDashboard.vue';
 import LandingPage from '../views/LandingPage.vue';
-
 const routes = [
     { path: '/', component: LandingPage },
     { path: '/login', component: Login },
@@ -27,24 +26,17 @@ const routes = [
         meta: { requiresAuth: true, role: 'patient' }
     }
 ];
-
 const router = createRouter({
     history: createWebHistory(),
     routes
 });
-
-// Navigation Guard
-// Runs before every route change to check authentication
 router.beforeEach((to, from, next) => {
     const isLoggedIn = store.getters.isLoggedIn;
     const userRole = store.getters.userRole;
-
     if (to.meta.requiresAuth) {
         if (!isLoggedIn) {
-            // Redirect to login if not authenticated
             next('/login');
         } else if (to.meta.role && to.meta.role !== userRole) {
-            // Redirect if role doesn't match (e.g., patient trying to access admin)
             next('/login');
         } else {
             next();
@@ -53,5 +45,4 @@ router.beforeEach((to, from, next) => {
         next();
     }
 });
-
 export default router;

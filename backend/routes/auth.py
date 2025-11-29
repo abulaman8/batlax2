@@ -34,7 +34,7 @@ def register():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-    role = data.get('role', 'patient') # Default to patient
+    role = data.get('role', 'patient')
     
     if role == 'admin':
         return jsonify({"msg": "Admin registration is not allowed"}), 403
@@ -53,7 +53,6 @@ def register():
     db.session.commit()
     
     if role == 'patient':
-        # Create empty patient profile
         patient = Patient(user_id=new_user.id)
         db.session.add(patient)
         db.session.commit()

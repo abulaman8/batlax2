@@ -32,7 +32,6 @@ def send_daily_reminders():
 @celery.task
 def send_monthly_report():
     """Send monthly activity report to doctors."""
-    # For simplicity, we'll just send a summary of their total appointments
     doctors = Doctor.query.all()
     count = 0
     
@@ -58,7 +57,6 @@ def export_patient_history(patient_id):
     if not patient:
         return "Patient not found"
         
-    # Generate CSV content
     csv_content = "Date,Time,Doctor,Diagnosis,Prescription\n"
     appointments = Appointment.query.filter_by(patient_id=patient.id).all()
     

@@ -2,8 +2,6 @@
   <div class="fade-in">
     <div class="container">
       <h2 class="mb-4 fw-bold text-primary">Admin Dashboard</h2>
-      
-      <!-- Stats Cards -->
       <div class="row mb-5">
         <div class="col-md-4">
           <div class="card bg-white h-100 border-0 shadow-hover border-start border-4 border-primary">
@@ -45,9 +43,7 @@
           </div>
         </div>
       </div>
-
       <div class="row">
-        <!-- Chart Section -->
         <div class="col-md-12 mb-4">
           <div class="card h-100">
             <div class="card-header bg-white py-3">
@@ -60,8 +56,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Manage Doctors -->
         <div class="col-md-7">
           <div class="card h-100">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
@@ -111,8 +105,6 @@
             </div>
           </div>
         </div>
-        
-        <!-- Recent Patients -->
         <div class="col-md-5">
           <div class="card h-100">
             <div class="card-header bg-white py-3">
@@ -137,8 +129,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Add Doctor Modal -->
       <div v-if="showAddModal" class="modal-backdrop fade show"></div>
       <div v-if="showAddModal" class="modal fade show d-block" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -178,15 +168,12 @@
     </div>
   </div>
 </template>
-
 <script>
 import { ref, onMounted, computed } from 'vue';
 import apiClient from '../services/api';
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
-
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
-
 export default {
   components: { Bar },
   setup() {
@@ -195,7 +182,6 @@ export default {
     const patients = ref([]);
     const showAddModal = ref(false);
     const newDoctor = ref({ username: '', email: '', password: '', specialization: '' });
-
     const chartData = computed(() => ({
       labels: ['Doctors', 'Patients', 'Appointments'],
       datasets: [{
@@ -205,7 +191,6 @@ export default {
         borderRadius: 8
       }]
     }));
-
     const chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
@@ -217,15 +202,12 @@ export default {
         x: { grid: { display: false } }
       }
     };
-
     const fetchData = async () => {
       try {
         const statsRes = await apiClient.get('/api/admin/stats');
         stats.value = statsRes.data;
-        
         const docsRes = await apiClient.get('/api/admin/doctors');
         doctors.value = docsRes.data;
-        
         const patientsRes = await apiClient.get('/api/admin/patients');
         patients.value = patientsRes.data;
       } catch (error) {
@@ -235,28 +217,23 @@ export default {
         }
       }
     };
-
     const addDoctor = async () => {
       await apiClient.post('/api/admin/doctors', newDoctor.value);
       newDoctor.value = { username: '', email: '', password: '', specialization: '' };
       showAddModal.value = false;
       fetchData();
     };
-    
     const deleteDoctor = async (id) => {
       if(confirm('Are you sure you want to deactivate this doctor?')) {
         await apiClient.delete(`/api/admin/doctors/${id}`);
         fetchData();
       }
     };
-
     onMounted(fetchData);
-
     return { stats, doctors, patients, newDoctor, showAddModal, addDoctor, deleteDoctor, chartData, chartOptions };
   }
 };
 </script>
-
 <style scoped>
 .bg-gradient-primary { background: linear-gradient(45deg, #00695c, #4db6ac); }
 .bg-gradient-success { background: linear-gradient(45deg, #2e7d32, #81c784); }

@@ -1,10 +1,10 @@
 from flask import Flask, jsonify
 from .config import Config
-from .extensions import db, jwt, cache, celery, mail
+from .extensions import db, jwt, cache, celery, mail, migrate
 from .models import User, Department, Doctor, Patient, Appointment, Treatment
 from werkzeug.security import generate_password_hash
 import click
-from flask_cors import CORS # Moved CORS import to top for clarity and scope
+from flask_cors import CORS
 
 def create_app(config_class=Config):
     """
@@ -23,32 +23,19 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    # Initialize Flask Extensions
-    # These bind the extensions to this specific app instance
     db.init_app(app)
     jwt.init_app(app)
     cache.init_app(app)
     mail.init_app(app)
+    migrate.init_app(app, db)
     
-    # Initialize Celery
-    # The user's provided Code Edit snippet changed this to celery_init_app(app)
-    # Assuming celery_init_app is a new function or a typo, I'll revert to the original
-    # structure for celery initialization as the instruction was primarily about docstrings
-    # and the Code Edit snippet didn't provide the definition for celery_init_app.
-    # If celery_init_app is intended, it should be defined elsewhere.
     app.extensions['celery'] = celery
     celery.conf.update(app.config)
     
-    # Import tasks to ensure they are registered
     from . import tasks
 
-    # CORS initialization moved up as per Code Edit
     CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-    # Register Blueprints
-    # Blueprints organize routes into distinct categories (Auth, Admin, Doctor, Patient)
-    # The user's provided Code Edit snippet changed import paths to 'backend.routes'.
-    # Reverting to original relative imports '.routes' as 'backend' prefix is not in original file.
     from .routes.auth import auth_bp
     from .routes.admin import admin_bp
     from .routes.doctor import doctor_bp
@@ -76,7 +63,6 @@ def create_app(config_class=Config):
         """Initialize the database and seed admin user."""
         db.create_all()
         
-        # Check if admin exists
         admin = User.query.filter_by(role='admin').first()
         if admin:
             db.session.delete(admin)

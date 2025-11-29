@@ -2,7 +2,6 @@ import sys
 import os
 from datetime import datetime, timedelta
 
-# Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from backend.app import create_app
@@ -16,7 +15,6 @@ app = create_app()
 def setup_test_data():
     print("\n--- Setting up Test Data ---")
     with app.app_context():
-        # Create Test Doctor
         doc_user = User.query.filter_by(email='testdoc@example.com').first()
         if not doc_user:
             doc_user = User(username='testdoc', email='testdoc@example.com', password_hash=generate_password_hash('password'), role='doctor')
@@ -34,7 +32,6 @@ def setup_test_data():
                 db.session.commit()
                 print("Created missing doctor profile.")
 
-        # Create Test Patient
         pat_user = User.query.filter_by(email='testpat@example.com').first()
         if not pat_user:
             pat_user = User(username='testpat', email='testpat@example.com', password_hash=generate_password_hash('password'), role='patient')
@@ -52,7 +49,6 @@ def setup_test_data():
                 db.session.commit()
                 print("Created missing patient profile.")
 
-        # Create Appointment for Tomorrow
         tomorrow = datetime.now().date() + timedelta(days=1)
         appt = Appointment.query.filter_by(doctor_id=doctor.id, patient_id=patient.id, date=tomorrow).first()
         if not appt:
@@ -74,18 +70,11 @@ def test_email_trigger():
     with app.app_context():
         print("Triggering 'send_daily_reminders' task...")
         
-        # We use .apply() here to run it synchronously in THIS process to see the output/errors directly
-        # without needing to check worker logs. The logic is the same.
-        # If we used .delay(), we'd need to check the worker output.
-        # Since the user wants to "make sure the emailing is triggered", running it here is a valid test of the logic.
-        # However, to test the WORKER picking it up, we should use .delay().
-        # Let's use .delay() and wait for the result.
         
         task = send_daily_reminders.delay()
         print(f"Task triggered with ID: {task.id}")
         
         try:
-            # Wait longer as email connection might timeout
             result = task.get(timeout=10)
             print(f"Task Result: {result}")
             

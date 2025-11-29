@@ -12,7 +12,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    role = db.Column(db.String(20), nullable=False) # 'admin', 'doctor', 'patient'
+    role = db.Column(db.String(20), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     
     doctor_profile = db.relationship('Doctor', backref='user', uselist=False)
@@ -36,7 +36,7 @@ class Doctor(db.Model):
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'), nullable=True)
     specialization = db.Column(db.String(100))
     experience_years = db.Column(db.Integer)
-    availability = db.Column(db.JSON) # Store availability as JSON, e.g., {"Mon": ["10:00", "12:00"]}
+    availability = db.Column(db.JSON)
     
     appointments = db.relationship('Appointment', backref='doctor', lazy=True)
 
@@ -61,7 +61,7 @@ class Appointment(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False)
     date = db.Column(db.Date, nullable=False)
     time = db.Column(db.Time, nullable=False)
-    status = db.Column(db.String(20), default='Booked') # Booked, Completed, Cancelled
+    status = db.Column(db.String(20), default='Booked')
     
     treatment = db.relationship('Treatment', backref='appointment', uselist=False)
 

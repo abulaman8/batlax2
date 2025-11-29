@@ -2,9 +2,7 @@
   <div class="fade-in">
     <div class="container">
       <h2 class="mb-4 fw-bold text-primary">Patient Portal</h2>
-    
     <div class="row">
-      <!-- Booking Section -->
       <div class="col-md-8">
         <div class="card h-100">
           <div class="card-header bg-white py-3">
@@ -15,7 +13,6 @@
               <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
               <input v-model="searchSpec" placeholder="Search by Specialization (e.g., Cardiology, Dentist)" class="form-control border-start-0 ps-0" @input="searchDoctors">
             </div>
-
             <div v-if="doctors.length > 0" class="row g-3">
               <div v-for="doc in doctors" :key="doc.id" class="col-md-6">
                 <div class="card h-100 border shadow-sm doctor-card">
@@ -52,8 +49,6 @@
           </div>
         </div>
       </div>
-
-      <!-- History Section -->
       <div class="col-md-4">
         <div class="card h-100">
           <div class="card-header bg-white py-3">
@@ -89,8 +84,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Details Modal -->
     <div v-if="selectedAppt" class="modal-backdrop fade show"></div>
     <div v-if="selectedAppt" class="modal fade show d-block" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
@@ -121,15 +114,12 @@
         </div>
       </div>
     </div>
-
     </div>
   </div>
 </template>
-
 <script>
 import { ref, onMounted } from 'vue';
 import apiClient from '../services/api';
-
 export default {
   setup() {
     const doctors = ref([]);
@@ -138,19 +128,16 @@ export default {
     const bookingDate = ref('');
     const bookingTime = ref('');
     const selectedAppt = ref(null);
-
     const searchDoctors = async () => {
       if (searchSpec.value.length > 2) {
         const res = await apiClient.get(`/api/patient/doctors?specialization=${searchSpec.value}`);
         doctors.value = res.data;
       }
     };
-
     const fetchHistory = async () => {
       const res = await apiClient.get('/api/patient/appointments');
       history.value = res.data;
     };
-
     const bookAppointment = async (doctorId) => {
       try {
         await apiClient.post('/api/patient/appointments', {
@@ -166,29 +153,21 @@ export default {
         alert('Booking failed: ' + (e.response?.data?.msg || e.message));
       }
     };
-
     const statusBadge = (status) => {
       if (status === 'Booked') return 'badge bg-primary-subtle text-primary-emphasis';
       if (status === 'Completed') return 'badge bg-success-subtle text-success-emphasis';
       return 'badge bg-secondary-subtle text-secondary-emphasis';
     };
-
     const viewDetails = async (appt) => {
         // In a real app, we might fetch details here. 
         // For now, we'll assume the list has enough or we mock it for the UI demo if missing.
-        // Let's assume the backend sends 'diagnosis' string. 
-        // We need to ensure the backend sends the full treatment object.
-        // I will update the backend to send full treatment details.
         selectedAppt.value = appt;
     };
-
     onMounted(fetchHistory);
-
     return { doctors, history, searchSpec, bookingDate, bookingTime, searchDoctors, bookAppointment, statusBadge, selectedAppt, viewDetails };
   }
 };
 </script>
-
 <style scoped>
 .avatar-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 .doctor-card { transition: transform 0.2s; }

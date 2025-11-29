@@ -81,8 +81,6 @@ def manage_appointments():
             appt_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
             appt_time = datetime.strptime(data['time'], '%H:%M').time()
             
-            # Check for overlapping appointments (30 min buffer)
-            # 1. Check if DOCTOR is available
             existing_doctor_appointments = Appointment.query.filter_by(doctor_id=doctor_id, date=appt_date).all()
             
             req_start = datetime.combine(appt_date, appt_time)
@@ -95,11 +93,9 @@ def manage_appointments():
                 exist_start = datetime.combine(appt.date, appt.time)
                 exist_end = exist_start + timedelta(minutes=30)
                 
-                # Check overlap: (StartA < EndB) and (EndA > StartB)
                 if req_start < exist_end and req_end > exist_start:
                      return jsonify({"msg": "Doctor is not available at this time. Please choose a slot at least 30 minutes apart from existing bookings."}), 400
 
-            # 2. Check if PATIENT is available (cannot be in two places at once)
             existing_patient_appointments = Appointment.query.filter_by(patient_id=patient.id, date=appt_date).all()
             for appt in existing_patient_appointments:
                 exist_start = datetime.combine(appt.date, appt.time)

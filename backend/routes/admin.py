@@ -98,7 +98,6 @@ def update_doctor(doctor_id):
     doctor = Doctor.query.get_or_404(doctor_id)
     
     if request.method == 'DELETE':
-        # Soft delete by deactivating user
         doctor.user.is_active = False
         db.session.commit()
         return jsonify({"msg": "Doctor deactivated"}), 200
@@ -107,7 +106,6 @@ def update_doctor(doctor_id):
         data = request.get_json()
         doctor.specialization = data.get('specialization', doctor.specialization)
         doctor.department_id = data.get('department_id', doctor.department_id)
-        # Update user details if provided
         if 'email' in data:
             doctor.user.email = data['email']
         

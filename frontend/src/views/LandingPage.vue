@@ -1,6 +1,5 @@
 <template>
   <div class="landing-page">
-    <!-- Hero Section -->
     <header class="hero-section">
       <div class="container-fluid">
         <div class="row align-items-center">
@@ -18,8 +17,6 @@
         </div>
       </div>
     </header>
-
-    <!-- Services Section -->
     <section class="services-section py-5">
       <div class="container">
         <h2 class="text-center mb-5 section-title">Our Services</h2>
@@ -60,8 +57,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Footer -->
     <footer class="footer py-4 text-center text-white">
       <div class="container">
         <p class="mb-0">&copy; 2023 Hospital Management System. All rights reserved.</p>
@@ -69,47 +64,39 @@
     </footer>
   </div>
 </template>
-
 <style scoped>
 .landing-page {
   font-family: 'Inter', sans-serif;
 }
-
 .hero-section {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #00251a 100%); /* Darker gradient end */
+  background: linear-gradient(135deg, var(--primary-color) 0%, #00251a 100%);  
   color: white;
   padding: 100px 0;
   position: relative;
   overflow: hidden;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Add text shadow for contrast */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);  
 }
-
 .hero-content {
   z-index: 2;
 }
-
 .hero-image {
   min-height: 500px;
   mask-image: linear-gradient(to right, transparent 0%, black 20%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%);
 }
-
 .section-title {
   color: var(--primary-dark);
   font-weight: 700;
 }
-
 .service-card {
   border: none;
   border-radius: 15px;
   box-shadow: var(--card-shadow);
   transition: transform 0.3s ease;
 }
-
 .service-card:hover {
   transform: translateY(-10px);
 }
-
 .icon-wrapper {
   height: 80px;
   width: 80px;
@@ -120,7 +107,6 @@
   justify-content: center;
   margin: 0 auto;
 }
-
 .footer {
   background-color: var(--primary-dark);
 }

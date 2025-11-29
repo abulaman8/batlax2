@@ -2,7 +2,6 @@
   <div class="fade-in">
     <div class="container">
       <h2 class="mb-4 fw-bold text-primary">Doctor's Console</h2>
-    
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-bold">Today's Appointments</h5>
@@ -50,8 +49,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Complete Modal -->
     <div v-if="selectedAppt" class="modal-backdrop fade show"></div>
     <div v-if="selectedAppt" class="modal fade show d-block" tabindex="-1">
       <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -84,11 +81,9 @@
     </div>
   </div>
 </template>
-
 <script>
 import { ref, onMounted } from 'vue';
 import apiClient from '../services/api';
-
 export default {
   setup() {
     const appointments = ref([]);
@@ -96,25 +91,21 @@ export default {
     const diagnosis = ref('');
     const prescription = ref('');
     const notes = ref('');
-
     const fetchAppointments = async () => {
       const res = await apiClient.get('/api/doctor/appointments');
       appointments.value = res.data;
     };
-
     const statusBadge = (status) => {
       if (status === 'Booked') return 'badge bg-primary-subtle text-primary-emphasis';
       if (status === 'Completed') return 'badge bg-success-subtle text-success-emphasis';
       return 'badge bg-secondary-subtle text-secondary-emphasis';
     };
-
     const openCompleteModal = (appt) => {
       selectedAppt.value = appt;
       diagnosis.value = '';
       prescription.value = '';
       notes.value = '';
     };
-
     const completeAppointment = async () => {
       await apiClient.post(`/api/doctor/appointments/${selectedAppt.value.id}/complete`, {
         diagnosis: diagnosis.value,
@@ -124,14 +115,11 @@ export default {
       selectedAppt.value = null;
       fetchAppointments();
     };
-
     onMounted(fetchAppointments);
-
     return { appointments, selectedAppt, diagnosis, prescription, notes, statusBadge, openCompleteModal, completeAppointment };
   }
 };
 </script>
-
 <style scoped>
 .avatar-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
 .fade-in { animation: fadeIn 0.5s ease-in; }

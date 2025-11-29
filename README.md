@@ -39,10 +39,16 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Initialize the database (creates `instance/hms.db` and seeds the Admin user):
+Initialize the database migrations (if not already done):
 
 ```bash
 export FLASK_APP=app.py
+flask db init
+```
+
+Create the database and seed the Admin user:
+
+```bash
 flask init-db
 ```
 
