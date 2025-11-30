@@ -40,6 +40,9 @@
                 <i class="bi bi-calendar-check fs-2"></i>
               </div>
             </div>
+            <div class="card-footer bg-white border-0 pt-0">
+              <button class="btn btn-sm btn-outline-info w-100 rounded-pill" @click="showAppointmentsModal = true">View All</button>
+            </div>
           </div>
         </div>
       </div>
@@ -122,7 +125,7 @@
                       <div class="text-muted small">{{ p.email }}</div>
                     </div>
                   </div>
-                  <button class="btn btn-sm btn-outline-secondary rounded-pill">View</button>
+                  <button class="btn btn-sm btn-outline-secondary rounded-pill" @click="viewPatient(p)">View</button>
                 </li>
               </ul>
             </div>
@@ -165,8 +168,88 @@
           </div>
         </div>
       </div>
+      </div>
+
+      <!-- Appointments Modal -->
+      <div v-if="showAppointmentsModal" class="modal-backdrop fade show"></div>
+      <div v-if="showAppointmentsModal" class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title">All Appointments</h5>
+              <button type="button" class="btn-close btn-close-white" @click="showAppointmentsModal = false"></button>
+            </div>
+            <div class="modal-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="bg-light">
+                    <tr>
+                      <th class="ps-4">Date & Time</th>
+                      <th>Doctor</th>
+                      <th>Patient</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="appt in appointments" :key="appt.id">
+                      <td class="ps-4">
+                        <div class="fw-bold">{{ appt.date }}</div>
+                        <div class="text-muted small">{{ appt.time }}</div>
+                      </td>
+                      <td>{{ appt.doctor_name }}</td>
+                      <td>{{ appt.patient_name }}</td>
+                      <td>
+                        <span v-if="appt.status === 'Booked'" class="badge bg-primary-subtle text-primary-emphasis">Booked</span>
+                        <span v-else-if="appt.status === 'Completed'" class="badge bg-success-subtle text-success-emphasis">Completed</span>
+                        <span v-else class="badge bg-secondary-subtle text-secondary-emphasis">{{ appt.status }}</span>
+                      </td>
+                    </tr>
+                    <tr v-if="appointments.length === 0">
+                      <td colspan="4" class="text-center py-4 text-muted">No appointments found.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patient Details Modal -->
+      <div v-if="selectedPatient" class="modal-backdrop fade show"></div>
+      <div v-if="selectedPatient" class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-success text-white">
+              <h5 class="modal-title">Patient Details</h5>
+              <button type="button" class="btn-close btn-close-white" @click="selectedPatient = null"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+              <div class="avatar-circle bg-success-subtle text-success mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                {{ selectedPatient.username.charAt(0).toUpperCase() }}
+              </div>
+              <h4 class="fw-bold mb-1">{{ selectedPatient.username }}</h4>
+              <p class="text-muted mb-4">{{ selectedPatient.email }}</p>
+              
+              <div class="row text-start">
+                <div class="col-6 mb-3">
+                  <label class="small text-muted text-uppercase fw-bold">Contact</label>
+                  <div class="fw-bold">{{ selectedPatient.contact || 'N/A' }}</div>
+                </div>
+                <div class="col-6 mb-3">
+                  <label class="small text-muted text-uppercase fw-bold">Status</label>
+                  <div>
+                    <span v-if="selectedPatient.is_active" class="badge bg-success-subtle text-success-emphasis">Active</span>
+                    <span v-else class="badge bg-danger-subtle text-danger-emphasis">Inactive</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
 </template>
 <script>
 import { ref, onMounted, computed } from 'vue';
@@ -180,7 +263,10 @@ export default {
     const stats = ref({ doctors: 0, patients: 0, appointments: 0 });
     const doctors = ref([]);
     const patients = ref([]);
+    const appointments = ref([]);
     const showAddModal = ref(false);
+    const showAppointmentsModal = ref(false);
+    const selectedPatient = ref(null);
     const newDoctor = ref({ username: '', email: '', password: '', specialization: '' });
     const chartData = computed(() => ({
       labels: ['Doctors', 'Patients', 'Appointments'],
@@ -210,6 +296,8 @@ export default {
         doctors.value = docsRes.data;
         const patientsRes = await apiClient.get('/api/admin/patients');
         patients.value = patientsRes.data;
+        const apptsRes = await apiClient.get('/api/admin/appointments');
+        appointments.value = apptsRes.data;
       } catch (error) {
         if (error.response && (error.response.status === 401 || error.response.status === 422)) {
            localStorage.removeItem('token');
@@ -229,8 +317,11 @@ export default {
         fetchData();
       }
     };
+    const viewPatient = (patient) => {
+      selectedPatient.value = patient;
+    };
     onMounted(fetchData);
-    return { stats, doctors, patients, newDoctor, showAddModal, addDoctor, deleteDoctor, chartData, chartOptions };
+    return { stats, doctors, patients, appointments, newDoctor, showAddModal, showAppointmentsModal, selectedPatient, addDoctor, deleteDoctor, viewPatient, chartData, chartOptions };
   }
 };
 </script>

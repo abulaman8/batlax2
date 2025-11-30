@@ -142,3 +142,21 @@ def manage_departments():
         db.session.add(dept)
         db.session.commit()
         return jsonify({"msg": "Department added"}), 201
+
+@admin_bp.route('/appointments', methods=['GET'])
+@jwt_required()
+@admin_required
+def get_all_appointments():
+    appointments = Appointment.query.order_by(Appointment.date.desc(), Appointment.time.desc()).all()
+    result = []
+    for appt in appointments:
+        result.append({
+            "id": appt.id,
+            "doctor_name": appt.doctor.user.username,
+            "patient_name": appt.patient.user.username,
+            "date": appt.date.isoformat(),
+            "time": appt.time.isoformat(),
+            "status": appt.status
+        })
+    return jsonify(result), 200
+

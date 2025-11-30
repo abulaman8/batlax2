@@ -1,0 +1,419 @@
+openapi: 3.0.0
+info:
+  title: Hospital Management System API
+  description: API for managing hospital operations, including users, doctors, patients, and appointments.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Local Development Server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+paths:
+  # Authentication Routes
+  /login:
+    post:
+      summary: Authenticate user
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  role:
+                    type: string
+                  username:
+                    type: string
+        401:
+          description: Invalid credentials
+
+  /register:
+    post:
+      summary: Register a new user (Patient)
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+                  default: patient
+      responses:
+        201:
+          description: User registered successfully
+        400:
+          description: User already exists
+        403:
+          description: Admin registration not allowed
+
+  /me:
+    get:
+      summary: Get current user info
+      tags: [Auth]
+      responses:
+        200:
+          description: Current user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  role:
+                    type: string
+                  username:
+                    type: string
+
+  # Patient Routes
+  /api/patient/doctors:
+    get:
+      summary: Search doctors
+      tags: [Patient]
+      parameters:
+        - in: query
+          name: specialization
+          schema:
+            type: string
+          description: Filter by specialization
+      responses:
+        200:
+          description: List of doctors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    specialization:
+                      type: string
+                    department:
+                      type: string
+                    availability:
+                      type: object
+
+  /api/patient/appointments:
+    get:
+      summary: Get patient appointments
+      tags: [Patient]
+      responses:
+        200:
+          description: List of appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    doctor_name:
+                      type: string
+                    date:
+                      type: string
+                      format: date
+                    time:
+                      type: string
+                      format: time
+                    status:
+                      type: string
+                    diagnosis:
+                      type: string
+                    treatment:
+                      type: object
+    post:
+      summary: Book an appointment
+      tags: [Patient]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                doctor_id:
+                  type: integer
+                date:
+                  type: string
+                  format: date
+                time:
+                  type: string
+                  format: time
+      responses:
+        201:
+          description: Appointment booked
+        400:
+          description: Invalid input or slot unavailable
+
+  /api/patient/profile:
+    get:
+      summary: Get patient profile
+      tags: [Patient]
+      responses:
+        200:
+          description: Patient profile details
+    put:
+      summary: Update patient profile
+      tags: [Patient]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contact:
+                  type: string
+                address:
+                  type: string
+                dob:
+                  type: string
+                  format: date
+      responses:
+        200:
+          description: Profile updated
+
+  # Doctor Routes
+  /api/doctor/appointments:
+    get:
+      summary: Get doctor appointments
+      tags: [Doctor]
+      responses:
+        200:
+          description: List of appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    patient_name:
+                      type: string
+                    date:
+                      type: string
+                    time:
+                      type: string
+                    status:
+                      type: string
+
+  /api/doctor/appointments/{appt_id}/complete:
+    post:
+      summary: Complete an appointment
+      tags: [Doctor]
+      parameters:
+        - in: path
+          name: appt_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                diagnosis:
+                  type: string
+                prescription:
+                  type: string
+                notes:
+                  type: string
+      responses:
+        200:
+          description: Appointment completed
+
+  /api/doctor/availability:
+    get:
+      summary: Get availability
+      tags: [Doctor]
+      responses:
+        200:
+          description: Availability object
+    post:
+      summary: Update availability
+      tags: [Doctor]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: Availability updated
+
+  /api/doctor/patients:
+    get:
+      summary: Get my patients
+      tags: [Doctor]
+      responses:
+        200:
+          description: List of patients treated by the doctor
+
+  # Admin Routes
+  /api/admin/stats:
+    get:
+      summary: Get system stats
+      tags: [Admin]
+      responses:
+        200:
+          description: System statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  doctors:
+                    type: integer
+                  patients:
+                    type: integer
+                  appointments:
+                    type: integer
+
+  /api/admin/doctors:
+    get:
+      summary: List all doctors
+      tags: [Admin]
+      responses:
+        200:
+          description: List of doctors
+    post:
+      summary: Add a new doctor
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                specialization:
+                  type: string
+                department_id:
+                  type: integer
+      responses:
+        201:
+          description: Doctor added
+
+  /api/admin/doctors/{doctor_id}:
+    put:
+      summary: Update doctor details
+      tags: [Admin]
+      parameters:
+        - in: path
+          name: doctor_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                specialization:
+                  type: string
+                department_id:
+                  type: integer
+                email:
+                  type: string
+      responses:
+        200:
+          description: Doctor updated
+    delete:
+      summary: Deactivate doctor
+      tags: [Admin]
+      parameters:
+        - in: path
+          name: doctor_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Doctor deactivated
+
+  /api/admin/patients:
+    get:
+      summary: List all patients
+      tags: [Admin]
+      responses:
+        200:
+          description: List of patients
+
+  /api/admin/departments:
+    get:
+      summary: List departments
+      tags: [Admin]
+      responses:
+        200:
+          description: List of departments
+    post:
+      summary: Add department
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        201:
+          description: Department added

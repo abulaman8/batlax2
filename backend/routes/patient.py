@@ -25,7 +25,7 @@ def search_doctors():
         List of doctors matching the criteria.
     """
     specialization = request.args.get('specialization')
-    query = Doctor.query
+    query = Doctor.query.join(User).filter(User.is_active == True)
     
     if specialization:
         query = query.filter(Doctor.specialization.ilike(f'%{specialization}%'))
@@ -77,6 +77,10 @@ def manage_appointments():
         data = request.get_json()
         doctor_id = data.get('doctor_id')
         
+        doctor = Doctor.query.get(doctor_id)
+        if not doctor or not doctor.user.is_active:
+            return jsonify({"msg": "Doctor is not available"}), 400
+
         try:
             appt_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
             appt_time = datetime.strptime(data['time'], '%H:%M').time()
