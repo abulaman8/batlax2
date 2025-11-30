@@ -55,7 +55,6 @@ def manage_doctors():
                 "id": doc.id,
                 "username": doc.user.username,
                 "email": doc.user.email,
-                "specialization": doc.specialization,
                 "department": doc.department.name if doc.department else None,
                 "is_active": doc.user.is_active
             })
@@ -66,7 +65,6 @@ def manage_doctors():
         username = data.get('username')
         email = data.get('email')
         password = data.get('password')
-        specialization = data.get('specialization')
         department_id = data.get('department_id')
         
         if User.query.filter_by(username=username).first():
@@ -83,7 +81,6 @@ def manage_doctors():
         
         new_doctor = Doctor(
             user_id=new_user.id,
-            specialization=specialization,
             department_id=department_id
         )
         db.session.add(new_doctor)
@@ -104,7 +101,6 @@ def update_doctor(doctor_id):
         
     if request.method == 'PUT':
         data = request.get_json()
-        doctor.specialization = data.get('specialization', doctor.specialization)
         doctor.department_id = data.get('department_id', doctor.department_id)
         if 'email' in data:
             doctor.user.email = data['email']

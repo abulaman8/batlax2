@@ -20,15 +20,15 @@ def search_doctors():
     Search for doctors by specialization.
     
     Query Params:
-        specialization: (Optional) Filter by specialization name.
+        department: (Optional) Filter by department name.
     Returns:
         List of doctors matching the criteria.
     """
-    specialization = request.args.get('specialization')
+    department = request.args.get('department')
     query = Doctor.query.join(User).filter(User.is_active == True)
     
-    if specialization:
-        query = query.filter(Doctor.specialization.ilike(f'%{specialization}%'))
+    if department:
+        query = query.join(Department).filter(Department.name.ilike(f'%{department}%'))
         
     doctors = query.all()
     result = []
@@ -36,7 +36,6 @@ def search_doctors():
         result.append({
             "id": doc.id,
             "name": doc.user.username,
-            "specialization": doc.specialization,
             "department": doc.department.name if doc.department else None,
             "availability": doc.availability
         })

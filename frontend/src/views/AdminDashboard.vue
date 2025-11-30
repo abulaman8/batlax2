@@ -45,6 +45,22 @@
             </div>
           </div>
         </div>
+        <div class="col-md-4 mt-4">
+          <div class="card bg-white h-100 border-0 shadow-hover border-start border-4 border-warning">
+            <div class="card-body d-flex align-items-center justify-content-between">
+              <div>
+                <h6 class="text-uppercase mb-2 text-muted fw-bold">Departments</h6>
+                <h2 class="display-4 fw-bold mb-0 text-dark">{{ departments.length }}</h2>
+              </div>
+              <div class="icon-circle bg-warning-subtle text-warning">
+                <i class="bi bi-building fs-2"></i>
+              </div>
+            </div>
+            <div class="card-footer bg-white border-0 pt-0">
+              <button class="btn btn-sm btn-outline-warning w-100 rounded-pill" @click="showDepartmentsModal = true">Manage</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="col-md-12 mb-4">
@@ -73,7 +89,7 @@
                   <thead class="bg-light">
                     <tr>
                       <th class="ps-4">Doctor</th>
-                      <th>Specialization</th>
+                      <th>Department</th>
                       <th>Status</th>
                       <th class="text-end pe-4">Actions</th>
                     </tr>
@@ -91,7 +107,7 @@
                           </div>
                         </div>
                       </td>
-                      <td><span class="badge bg-info-subtle text-info-emphasis">{{ doc.specialization }}</span></td>
+                      <td><span class="text-muted small">{{ doc.department || 'N/A' }}</span></td>
                       <td>
                         <span v-if="doc.is_active" class="badge bg-success-subtle text-success-emphasis">Active</span>
                         <span v-else class="badge bg-danger-subtle text-danger-emphasis">Inactive</span>
@@ -151,14 +167,17 @@
                   <input v-model="newDoctor.email" type="email" class="form-control form-control-lg" required>
                 </div>
                 <div class="row">
-                  <div class="col-md-6 mb-3">
+                  <div class="col-md-12 mb-3">
                     <label class="form-label text-muted small text-uppercase fw-bold">Password</label>
                     <input v-model="newDoctor.password" type="password" class="form-control form-control-lg" required>
                   </div>
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label text-muted small text-uppercase fw-bold">Specialization</label>
-                    <input v-model="newDoctor.specialization" class="form-control form-control-lg" required>
-                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label text-muted small text-uppercase fw-bold">Department</label>
+                  <select v-model="newDoctor.department_id" class="form-select form-select-lg">
+                    <option value="" disabled>Select Department</option>
+                    <option v-for="dept in departments" :key="dept.id" :value="dept.id">{{ dept.name }}</option>
+                  </select>
                 </div>
                 <div class="d-grid mt-4">
                   <button type="submit" class="btn btn-primary btn-lg">Create Profile</button>
@@ -169,8 +188,6 @@
         </div>
       </div>
       </div>
-
-      <!-- Appointments Modal -->
       <div v-if="showAppointmentsModal" class="modal-backdrop fade show"></div>
       <div v-if="showAppointmentsModal" class="modal fade show d-block" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -214,8 +231,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Patient Details Modal -->
       <div v-if="selectedPatient" class="modal-backdrop fade show"></div>
       <div v-if="selectedPatient" class="modal fade show d-block" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -230,7 +245,6 @@
               </div>
               <h4 class="fw-bold mb-1">{{ selectedPatient.username }}</h4>
               <p class="text-muted mb-4">{{ selectedPatient.email }}</p>
-              
               <div class="row text-start">
                 <div class="col-6 mb-3">
                   <label class="small text-muted text-uppercase fw-bold">Contact</label>
@@ -248,7 +262,32 @@
           </div>
         </div>
       </div>
-
+      <div v-if="showDepartmentsModal" class="modal-backdrop fade show"></div>
+      <div v-if="showDepartmentsModal" class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-warning text-white">
+              <h5 class="modal-title">Manage Departments</h5>
+              <button type="button" class="btn-close btn-close-white" @click="showDepartmentsModal = false"></button>
+            </div>
+            <div class="modal-body p-4">
+              <form @submit.prevent="addDepartment" class="mb-4">
+                <div class="input-group">
+                  <input v-model="newDepartment" class="form-control" placeholder="New Department Name" required>
+                  <button class="btn btn-warning text-white" type="submit">Add</button>
+                </div>
+              </form>
+              <ul class="list-group">
+                <li v-for="dept in departments" :key="dept.id" class="list-group-item d-flex justify-content-between align-items-center">
+                  {{ dept.name }}
+                  <span class="badge bg-secondary rounded-pill">{{ dept.id }}</span>
+                </li>
+                <li v-if="departments.length === 0" class="list-group-item text-center text-muted">No departments found.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 </template>
 <script>
@@ -264,10 +303,13 @@ export default {
     const doctors = ref([]);
     const patients = ref([]);
     const appointments = ref([]);
+    const departments = ref([]);
     const showAddModal = ref(false);
     const showAppointmentsModal = ref(false);
+    const showDepartmentsModal = ref(false);
     const selectedPatient = ref(null);
-    const newDoctor = ref({ username: '', email: '', password: '', specialization: '' });
+    const newDoctor = ref({ username: '', email: '', password: '', department_id: '' });
+    const newDepartment = ref('');
     const chartData = computed(() => ({
       labels: ['Doctors', 'Patients', 'Appointments'],
       datasets: [{
@@ -298,6 +340,8 @@ export default {
         patients.value = patientsRes.data;
         const apptsRes = await apiClient.get('/api/admin/appointments');
         appointments.value = apptsRes.data;
+        const deptsRes = await apiClient.get('/api/admin/departments');
+        departments.value = deptsRes.data;
       } catch (error) {
         if (error.response && (error.response.status === 401 || error.response.status === 422)) {
            localStorage.removeItem('token');
@@ -307,8 +351,13 @@ export default {
     };
     const addDoctor = async () => {
       await apiClient.post('/api/admin/doctors', newDoctor.value);
-      newDoctor.value = { username: '', email: '', password: '', specialization: '' };
+      newDoctor.value = { username: '', email: '', password: '', department_id: '' };
       showAddModal.value = false;
+      fetchData();
+    };
+    const addDepartment = async () => {
+      await apiClient.post('/api/admin/departments', { name: newDepartment.value });
+      newDepartment.value = '';
       fetchData();
     };
     const deleteDoctor = async (id) => {
@@ -321,7 +370,7 @@ export default {
       selectedPatient.value = patient;
     };
     onMounted(fetchData);
-    return { stats, doctors, patients, appointments, newDoctor, showAddModal, showAppointmentsModal, selectedPatient, addDoctor, deleteDoctor, viewPatient, chartData, chartOptions };
+    return { stats, doctors, patients, appointments, departments, newDoctor, newDepartment, showAddModal, showAppointmentsModal, showDepartmentsModal, selectedPatient, addDoctor, addDepartment, deleteDoctor, viewPatient, chartData, chartOptions };
   }
 };
 </script>

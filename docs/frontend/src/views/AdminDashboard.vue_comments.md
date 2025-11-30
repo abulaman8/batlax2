@@ -1,7 +1,5 @@
 # Comments extracted from AdminDashboard.vue
 
-- Line 6: <!-- Stats Cards -->
-- Line 50: <!-- Chart Section -->
-- Line 64: <!-- Manage Doctors -->
-- Line 115: <!-- Recent Patients -->
-- Line 141: <!-- Add Doctor Modal -->
+- Line 192: <!-- Appointments Modal -->
+- Line 237: <!-- Patient Details Modal -->
+- Line 271: <!-- Departments Modal -->

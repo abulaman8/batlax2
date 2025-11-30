@@ -56,7 +56,7 @@ No use of AI/LLM.
 
 1.  **User** — stores user authentication details (id, username, email, password_hash, role, is_active)
 2.  **Department** — stores hospital departments (id, name, description)
-3.  **Doctor** — stores doctor profiles linked to users (id, user_id, department_id, specialization, experience_years, availability)
+3.  **Doctor** — stores doctor profiles linked to users (id, user_id, department_id, experience_years, availability)
 4.  **Patient** — stores patient profiles linked to users (id, user_id, date_of_birth, contact_number, address)
 5.  **Appointment** — logs appointments between doctors and patients (id, doctor_id, patient_id, date, time, status)
 6.  **Treatment** — stores medical records for appointments (id, appointment_id, diagnosis, prescription, notes, date_created)
@@ -80,10 +80,11 @@ No use of AI/LLM.
 | :---- | :---- | :---- |
 | `/login` | POST | Authenticate user and return JWT access token |
 | `/register` | POST | Register a new user (Patient role by default) |
-| `/api/patient/doctors` | GET | Search for doctors by specialization |
+| `/api/patient/doctors` | GET | Search for doctors by department |
 | `/api/patient/appointments` | GET | Fetch all past and upcoming appointments for the logged-in patient |
 | `/api/patient/appointments` | POST | Book a new appointment with a doctor |
 | `/api/patient/profile` | GET/PUT | Retrieve or update patient profile details |
+| `/api/admin/departments` | GET/POST | Manage hospital departments |
 
 **YAML API Definition File:**
 Included separately in the submission ZIP as `api.yaml`.

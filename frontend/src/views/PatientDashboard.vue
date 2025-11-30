@@ -11,7 +11,7 @@
           <div class="card-body">
             <div class="input-group mb-4 shadow-sm">
               <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-              <input v-model="searchSpec" placeholder="Search by Specialization (e.g., Cardiology, Dentist)" class="form-control border-start-0 ps-0" @input="searchDoctors">
+              <input v-model="searchDept" placeholder="Search by Department (e.g., Cardiology)" class="form-control border-start-0 ps-0" @input="searchDoctors">
             </div>
             <div v-if="doctors.length > 0" class="row g-3">
               <div v-for="doc in doctors" :key="doc.id" class="col-md-6">
@@ -21,7 +21,7 @@
                       <div class="avatar-circle bg-primary text-white me-3">{{ doc.name.charAt(0) }}</div>
                       <div>
                         <h6 class="mb-0 fw-bold">{{ doc.name }}</h6>
-                        <small class="text-muted">{{ doc.specialization }}</small>
+                        <small class="text-info" v-if="doc.department">{{ doc.department }}</small>
                       </div>
                     </div>
                     <form @submit.prevent="bookAppointment(doc.id)">
@@ -39,8 +39,8 @@
                 </div>
               </div>
             </div>
-            <div v-else-if="searchSpec.length > 2" class="text-center py-5 text-muted">
-              <p>No doctors found for "{{ searchSpec }}"</p>
+            <div v-else-if="searchDept.length > 2" class="text-center py-5 text-muted">
+              <p>No doctors found for "{{ searchDept }}"</p>
             </div>
             <div v-else class="text-center py-5 text-muted">
               <i class="bi bi-search display-4 mb-3 d-block opacity-25"></i>
@@ -124,13 +124,13 @@ export default {
   setup() {
     const doctors = ref([]);
     const history = ref([]);
-    const searchSpec = ref('');
+    const searchDept = ref('');
     const bookingDate = ref('');
     const bookingTime = ref('');
     const selectedAppt = ref(null);
     const searchDoctors = async () => {
-      if (searchSpec.value.length > 2) {
-        const res = await apiClient.get(`/api/patient/doctors?specialization=${searchSpec.value}`);
+      if (searchDept.value.length > 2) {
+        const res = await apiClient.get(`/api/patient/doctors?department=${searchDept.value}`);
         doctors.value = res.data;
       }
     };
@@ -164,7 +164,7 @@ export default {
         selectedAppt.value = appt;
     };
     onMounted(fetchHistory);
-    return { doctors, history, searchSpec, bookingDate, bookingTime, searchDoctors, bookAppointment, statusBadge, selectedAppt, viewDetails };
+    return { doctors, history, searchDept, bookingDate, bookingTime, searchDoctors, bookAppointment, statusBadge, selectedAppt, viewDetails };
   }
 };
 </script>

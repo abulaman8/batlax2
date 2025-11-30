@@ -34,7 +34,6 @@ class Doctor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'), nullable=True)
-    specialization = db.Column(db.String(100))
     experience_years = db.Column(db.Integer)
     availability = db.Column(db.JSON)
     
